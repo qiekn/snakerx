@@ -3042,7 +3042,7 @@ function init()
     "hardening",
   }
 
-  steam.userStats.requestCurrentStats()
+  -- steam.userStats.requestCurrentStats()
   new_game_plus = state.new_game_plus or 0
   if not state.new_game_plus then
     state.new_game_plus = new_game_plus
@@ -3467,18 +3467,15 @@ function open_options(self)
               system.save_run()
               main:go_to("buy_screen", 1, 0, {}, passives, 1, 0)
             end,
-            text = Text(
+            text = Text({
               {
-                {
-                  text = "[wavy, "
-                    .. tostring(state.dark_transitions and "fg" or "bg")
-                    .. "]restarting...",
-                  font = pixul_font,
-                  alignment = "center",
-                },
+                text = "[wavy, "
+                  .. tostring(state.dark_transitions and "fg" or "bg")
+                  .. "]restarting...",
+                font = pixul_font,
+                alignment = "center",
               },
-              global_text_tags
-            ),
+            }, global_text_tags),
           })
         end,
       })
@@ -3825,16 +3822,13 @@ function open_options(self)
               main:add(MainMenu("main_menu"))
               main:go_to("main_menu")
             end,
-            text = Text(
+            text = Text({
               {
-                {
-                  text = "[wavy, " .. tostring(state.dark_transitions and "fg" or "bg") .. "]..",
-                  font = pixul_font,
-                  alignment = "center",
-                },
+                text = "[wavy, " .. tostring(state.dark_transitions and "fg" or "bg") .. "]..",
+                font = pixul_font,
+                alignment = "center",
               },
-              global_text_tags
-            ),
+            }, global_text_tags),
           })
         end,
       })
@@ -3850,7 +3844,7 @@ function open_options(self)
       bg_color = "bg",
       action = function()
         system.save_state()
-        steam.shutdown()
+        -- steam.shutdown()
         love.event.quit()
       end,
     })
@@ -3960,7 +3954,7 @@ end
 
 function love.run()
   return engine_run({
-    game_name = "SNKRX",
+    game_name = "game",
     window_width = "max",
     window_height = "max",
   })

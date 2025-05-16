@@ -10,8 +10,8 @@ function MainMenu:on_enter(from)
   slow_amount = 1
   trigger:tween(2, main_song_instance, { volume = 0.5, pitch = 1 }, math.linear)
 
-  steam.friends.setRichPresence("steam_display", "#StatusFull")
-  steam.friends.setRichPresence("text", "Main Menu")
+  -- steam.friends.setRichPresence("steam_display", "#StatusFull")
+  -- steam.friends.setRichPresence("text", "Main Menu")
 
   self.floor = Group()
   self.main = Group():set_as_physics_world(
@@ -121,15 +121,13 @@ function MainMenu:on_enter(from)
         ii = i,
       })
     else
-      self.player:add_follower(
-        Player({
-          group = self.main,
-          character = unit.character,
-          level = unit.level,
-          passives = self.passives,
-          ii = i,
-        })
-      )
+      self.player:add_follower(Player({
+        group = self.main,
+        character = unit.character,
+        level = unit.level,
+        passives = self.passives,
+        ii = i,
+      }))
     end
   end
 
@@ -261,18 +259,13 @@ function MainMenu:on_enter(from)
             run.shop_xp or 0
           )
         end,
-        text = Text(
+        text = Text({
           {
-            {
-              text = "[wavy, "
-                .. tostring(state.dark_transitions and "fg" or "bg")
-                .. "]starting...",
-              font = pixul_font,
-              alignment = "center",
-            },
+            text = "[wavy, " .. tostring(state.dark_transitions and "fg" or "bg") .. "]starting...",
+            font = pixul_font,
+            alignment = "center",
           },
-          global_text_tags
-        ),
+        }, global_text_tags),
       })
     end,
   })

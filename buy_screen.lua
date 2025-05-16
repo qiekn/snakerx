@@ -48,8 +48,8 @@ function BuyScreen:on_enter(from, level, loop, units, passives, shop_level, shop
 
   input:set_mouse_visible(true)
 
-  steam.friends.setRichPresence("steam_display", "#StatusFull")
-  steam.friends.setRichPresence("text", "Shop - Level " .. self.level)
+  -- steam.friends.setRichPresence("steam_display", "#StatusFull")
+  -- steam.friends.setRichPresence("text", "Shop - Level " .. self.level)
 
   self.main = Group()
   self.effects = Group()
@@ -63,26 +63,20 @@ function BuyScreen:on_enter(from, level, loop, units, passives, shop_level, shop
   self:set_party_and_sets()
   self:set_items()
 
-  self.shop_text = Text(
+  self.shop_text = Text({
     {
-      {
-        text = "[wavy_mid, fg]shop [fg]- gold: [yellow]" .. gold,
-        font = pixul_font,
-        alignment = "center",
-      },
+      text = "[wavy_mid, fg]shop [fg]- gold: [yellow]" .. gold,
+      font = pixul_font,
+      alignment = "center",
     },
-    global_text_tags
-  )
-  self.party_text = Text(
+  }, global_text_tags)
+  self.party_text = Text({
     {
-      {
-        text = "[wavy_mid, fg]party " .. tostring(#units) .. "/" .. tostring(max_units),
-        font = pixul_font,
-        alignment = "center",
-      },
+      text = "[wavy_mid, fg]party " .. tostring(#units) .. "/" .. tostring(max_units),
+      font = pixul_font,
+      alignment = "center",
     },
-    global_text_tags
-  )
+  }, global_text_tags)
   self.sets_text = Text(
     { { text = "[wavy_mid, fg]classes", font = pixul_font, alignment = "center" } },
     global_text_tags
@@ -104,16 +98,13 @@ function BuyScreen:on_enter(from, level, loop, units, passives, shop_level, shop
       return ""
     end
   end
-  self.level_text = Text(
+  self.level_text = Text({
     {
-      {
-        text = "[fg]Lv." .. tostring(self.level) .. get_elite_str(self.level),
-        font = pixul_font,
-        alignment = "center",
-      },
+      text = "[fg]Lv." .. tostring(self.level) .. get_elite_str(self.level),
+      font = pixul_font,
+      alignment = "center",
     },
-    global_text_tags
-  )
+  }, global_text_tags)
 
   RerollButton({ group = self.main, x = 150, y = 18, parent = self })
   GoButton({ group = self.main, x = gw - 90, y = gh - 20, parent = self })
@@ -456,18 +447,15 @@ function BuyScreen:on_enter(from, level, loop, units, passives, shop_level, shop
           system.save_run()
           main:go_to("buy_screen", 1, 0, {}, passives, 1, 0)
         end,
-        text = Text(
+        text = Text({
           {
-            {
-              text = "[wavy, "
-                .. tostring(state.dark_transitions and "fg" or "bg")
-                .. "]restarting...",
-              font = pixul_font,
-              alignment = "center",
-            },
+            text = "[wavy, "
+              .. tostring(state.dark_transitions and "fg" or "bg")
+              .. "]restarting...",
+            font = pixul_font,
+            alignment = "center",
           },
-          global_text_tags
-        ),
+        }, global_text_tags),
       })
     end,
     mouse_enter = function(b)
@@ -930,6 +918,7 @@ function BuyScreen:set_items()
   end
 end
 
+--[[
 SteamFollowButton = Object:extend()
 SteamFollowButton:implement(GameObject)
 function SteamFollowButton:init(args)
@@ -1073,6 +1062,7 @@ function WishlistButton:on_mouse_exit()
   end
   self.selected = false
 end
+--]]
 
 RestartButton = Object:extend()
 RestartButton:implement(GameObject)
@@ -1080,16 +1070,13 @@ function RestartButton:init(args)
   self:init_game_object(args)
   self.shape = Rectangle(self.x, self.y, pixul_font:get_text_width("restart") + 4, pixul_font.h + 4)
   self.interact_with_mouse = true
-  self.text = Text(
+  self.text = Text({
     {
-      {
-        text = "[bg10]NG+" .. tostring(current_new_game_plus),
-        font = pixul_font,
-        alignment = "center",
-      },
+      text = "[bg10]NG+" .. tostring(current_new_game_plus),
+      font = pixul_font,
+      alignment = "center",
     },
-    global_text_tags
-  )
+  }, global_text_tags)
 end
 
 function RestartButton:update(dt)
@@ -1205,18 +1192,13 @@ function RestartButton:update(dt)
         system.save_run()
         main:go_to("buy_screen", 1, 0, {}, passives, 1, 0)
       end,
-      text = Text(
+      text = Text({
         {
-          {
-            text = "[wavy, "
-              .. tostring(state.dark_transitions and "fg" or "bg")
-              .. "]restarting...",
-            font = pixul_font,
-            alignment = "center",
-          },
+          text = "[wavy, " .. tostring(state.dark_transitions and "fg" or "bg") .. "]restarting...",
+          font = pixul_font,
+          alignment = "center",
         },
-        global_text_tags
-      ),
+      }, global_text_tags),
     })
   end
 end
@@ -1278,16 +1260,13 @@ function Button:init(args)
     pixul_font.h + 4
   )
   self.interact_with_mouse = true
-  self.text = Text(
+  self.text = Text({
     {
-      {
-        text = "[" .. self.fg_color .. "]" .. self.button_text,
-        font = pixul_font,
-        alignment = "center",
-      },
+      text = "[" .. self.fg_color .. "]" .. self.button_text,
+      font = pixul_font,
+      alignment = "center",
     },
-    global_text_tags
-  )
+  }, global_text_tags)
 end
 
 function Button:update(dt)
@@ -1476,21 +1455,18 @@ function GoButton:update(dt)
             self.parent.locked
           )
         end,
-        text = Text(
+        text = Text({
           {
-            {
-              text = "[wavy, "
-                .. tostring(state.dark_transitions and "fg" or "bg")
-                .. "]level "
-                .. tostring(self.parent.level)
-                .. "/"
-                .. tostring(25 * (self.parent.loop + 1)),
-              font = pixul_font,
-              alignment = "center",
-            },
+            text = "[wavy, "
+              .. tostring(state.dark_transitions and "fg" or "bg")
+              .. "]level "
+              .. tostring(self.parent.level)
+              .. "/"
+              .. tostring(25 * (self.parent.loop + 1)),
+            font = pixul_font,
+            alignment = "center",
           },
-          global_text_tags
-        ),
+        }, global_text_tags),
       })
     end
 
@@ -1540,27 +1516,21 @@ function LockButton:init(args)
     self.shape.w = 32
   end
   if self.parent.locked then
-    self.text = Text(
+    self.text = Text({
       {
-        {
-          text = "[fgm5]" .. tostring(self.parent.locked and "unlock" or "lock"),
-          font = pixul_font,
-          alignment = "center",
-        },
+        text = "[fgm5]" .. tostring(self.parent.locked and "unlock" or "lock"),
+        font = pixul_font,
+        alignment = "center",
       },
-      global_text_tags
-    )
+    }, global_text_tags)
   else
-    self.text = Text(
+    self.text = Text({
       {
-        {
-          text = "[bg10]" .. tostring(self.parent.locked and "unlock" or "lock"),
-          font = pixul_font,
-          alignment = "center",
-        },
+        text = "[bg10]" .. tostring(self.parent.locked and "unlock" or "lock"),
+        font = pixul_font,
+        alignment = "center",
       },
-      global_text_tags
-    )
+    }, global_text_tags)
   end
 end
 
@@ -1659,16 +1629,13 @@ function LevelButton:init(args)
   self:init_game_object(args)
   self.interact_with_mouse = true
   self.shape = Rectangle(self.x, self.y, 16, 16)
-  self.text = Text(
+  self.text = Text({
     {
-      {
-        text = "[bg10]" .. tostring(self.parent.shop_level),
-        font = pixul_font,
-        alignment = "center",
-      },
+      text = "[bg10]" .. tostring(self.parent.shop_level),
+      font = pixul_font,
+      alignment = "center",
     },
-    global_text_tags
-  )
+  }, global_text_tags)
   self.shop_xp = self.parent.shop_xp or 0
   self.max_xp = (self.parent.shop_level == 1 and 3)
     or (self.parent.shop_level == 2 and 4)
@@ -1724,16 +1691,13 @@ function LevelButton:update(dt)
           alignment = "center",
         },
       })
-      self.text = Text(
+      self.text = Text({
         {
-          {
-            text = "[bg10]" .. tostring(self.parent.shop_level),
-            font = pixul_font,
-            alignment = "center",
-          },
+          text = "[bg10]" .. tostring(self.parent.shop_level),
+          font = pixul_font,
+          alignment = "center",
         },
-        global_text_tags
-      )
+      }, global_text_tags)
       system.save_run(
         self.parent.level,
         self.parent.loop,
@@ -1789,16 +1753,13 @@ function LevelButton:update(dt)
           alignment = "center",
         },
       })
-      self.text = Text(
+      self.text = Text({
         {
-          {
-            text = "[bg10]" .. tostring(self.parent.shop_level),
-            font = pixul_font,
-            alignment = "center",
-          },
+          text = "[bg10]" .. tostring(self.parent.shop_level),
+          font = pixul_font,
+          alignment = "center",
         },
-        global_text_tags
-      )
+      }, global_text_tags)
       system.save_run(
         self.parent.level,
         self.parent.loop,
@@ -1999,7 +1960,11 @@ function LevelButton:on_mouse_enter()
   pop2:play({ pitch = random:float(0.95, 1.05), volume = 0.5 })
   self.selected = true
   self.text:set_text({
-    { text = "[fgm5]" .. tostring(self.parent.shop_level), font = pixul_font, alignment = "center" },
+    {
+      text = "[fgm5]" .. tostring(self.parent.shop_level),
+      font = pixul_font,
+      alignment = "center",
+    },
   })
   self.spring:pull(0.2, 200, 10)
   self:create_info_text()
@@ -2007,7 +1972,11 @@ end
 
 function LevelButton:on_mouse_exit()
   self.text:set_text({
-    { text = "[bg10]" .. tostring(self.parent.shop_level), font = pixul_font, alignment = "center" },
+    {
+      text = "[bg10]" .. tostring(self.parent.shop_level),
+      font = pixul_font,
+      alignment = "center",
+    },
   })
   self.selected = false
   if self.info_text then
@@ -2666,16 +2635,13 @@ function PassiveCard:init(args)
   self:init_game_object(args)
   self.shape = Rectangle(self.x, self.y, self.w, self.h)
   self.interact_with_mouse = true
-  self.passive_name = Text(
+  self.passive_name = Text({
     {
-      {
-        text = "[fg, wavy_mid]" .. passive_names[self.passive],
-        font = pixul_font,
-        alignment = "center",
-      },
+      text = "[fg, wavy_mid]" .. passive_names[self.passive],
+      font = pixul_font,
+      alignment = "center",
     },
-    global_text_tags
-  )
+  }, global_text_tags)
   self.passive_description = passive_descriptions[self.passive]
   self.spring:pull(0.2, 200, 10)
 end
@@ -2817,16 +2783,13 @@ function ItemCard:update(dt)
           alignment = "center",
         },
       })
-      self.text = Text(
+      self.text = Text({
         {
-          {
-            text = "[bg10]" .. tostring(self.parent.shop_level),
-            font = pixul_font,
-            alignment = "center",
-          },
+          text = "[bg10]" .. tostring(self.parent.shop_level),
+          font = pixul_font,
+          alignment = "center",
         },
-        global_text_tags
-      )
+      }, global_text_tags)
       system.save_run(
         self.parent.level,
         self.parent.loop,
@@ -3194,18 +3157,15 @@ function CharacterIcon:init(args)
   self:init_game_object(args)
   self.shape = Rectangle(self.x, self.y, 40, 20)
   self.interact_with_mouse = true
-  self.character_text = Text(
+  self.character_text = Text({
     {
-      {
-        text = "[" .. character_color_strings[self.character] .. "]" .. string.lower(
-          character_names[self.character]
-        ),
-        font = pixul_font,
-        alignment = "center",
-      },
+      text = "[" .. character_color_strings[self.character] .. "]" .. string.lower(
+        character_names[self.character]
+      ),
+      font = pixul_font,
+      alignment = "center",
     },
-    global_text_tags
-  )
+  }, global_text_tags)
 end
 
 function CharacterIcon:update(dt)

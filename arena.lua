@@ -25,8 +25,8 @@ function Arena:on_enter(from, level, loop, units, passives, shop_level, shop_xp,
 
   trigger:tween(2, main_song_instance, { volume = 0.5, pitch = 1 }, math.linear)
 
-  steam.friends.setRichPresence("steam_display", "#StatusFull")
-  steam.friends.setRichPresence("text", "Arena - Level " .. self.level)
+  -- steam.friends.setRichPresence("steam_display", "#StatusFull")
+  -- steam.friends.setRichPresence("text", "Arena - Level " .. self.level)
 
   self.floor = Group()
   self.main = Group():set_as_physics_world(
@@ -80,11 +80,16 @@ function Arena:on_enter(from, level, loop, units, passives, shop_level, shop_xp,
     { x = self.x2 - 32, y = self.y2 - 32, r = -3 * math.pi / 4 },
     { x = gw / 2, y = gh / 2, r = random:float(0, 2 * math.pi) },
   }
-  self.spawn_offsets =
-    { { x = -12, y = -12 }, { x = 12, y = -12 }, { x = 12, y = 12 }, { x = -12, y = 12 }, {
+  self.spawn_offsets = {
+    { x = -12, y = -12 },
+    { x = 12, y = -12 },
+    { x = 12, y = 12 },
+    { x = -12, y = 12 },
+    {
       x = 0,
       y = 0,
-    } }
+    },
+  }
   self.last_spawn_enemy_time = love.timer.getTime()
 
   Wall({
@@ -141,15 +146,13 @@ function Arena:on_enter(from, level, loop, units, passives, shop_level, shop_xp,
         ii = i,
       })
     else
-      self.player:add_follower(
-        Player({
-          group = self.main,
-          character = unit.character,
-          level = unit.level,
-          passives = self.passives,
-          ii = i,
-        })
-      )
+      self.player:add_follower(Player({
+        group = self.main,
+        character = unit.character,
+        level = unit.level,
+        passives = self.passives,
+        ii = i,
+      }))
     end
   end
 
@@ -250,28 +253,18 @@ function Arena:on_enter(from, level, loop, units, passives, shop_level, shop_xp,
         if self.level == 6 then
           state.achievement_speed_booster = true
           system.save_state()
-          steam.userStats.setAchievement("SPEED_BOOSTER")
-          steam.userStats.storeStats()
         elseif self.level == 12 then
           state.achievement_exploder = true
           system.save_state()
-          steam.userStats.setAchievement("EXPLODER")
-          steam.userStats.storeStats()
         elseif self.level == 18 then
           state.achievement_swarmer = true
           system.save_state()
-          steam.userStats.setAchievement("SWARMER")
-          steam.userStats.storeStats()
         elseif self.level == 24 then
           state.achievement_forcer = true
           system.save_state()
-          steam.userStats.setAchievement("FORCER")
-          steam.userStats.storeStats()
         elseif self.level == 25 then
           state.achievement_cluster = true
           system.save_state()
-          steam.userStats.setAchievement("CLUSTER")
-          steam.userStats.storeStats()
         end
       end)
     end)
@@ -746,18 +739,15 @@ function Arena:update(dt)
           system.save_run()
           main:go_to("buy_screen", 1, 0, {}, passives, 1, 0)
         end,
-        text = Text(
+        text = Text({
           {
-            {
-              text = "[wavy, "
-                .. tostring(state.dark_transitions and "fg" or "bg")
-                .. "]restarting...",
-              font = pixul_font,
-              alignment = "center",
-            },
+            text = "[wavy, "
+              .. tostring(state.dark_transitions and "fg" or "bg")
+              .. "]restarting...",
+            font = pixul_font,
+            alignment = "center",
           },
-          global_text_tags
-        ),
+        }, global_text_tags),
       })
     end
 
@@ -929,7 +919,12 @@ function Arena:quit()
               },
             },
           })
-          SteamFollowButton({ group = self.ui, x = gw / 2 + 40, y = gh / 2 + 58, force_update = true })
+          SteamFollowButton({
+            group = self.ui,
+            x = gw / 2 + 40,
+            y = gh / 2 + 58,
+            force_update = true,
+          })
           Button({
             group = self.ui,
             x = gw - 40,
@@ -1030,7 +1025,12 @@ function Arena:quit()
           }}
           ]]
           --
-          SteamFollowButton({ group = self.ui, x = gw / 2 + 40, y = gh / 2 - 10, force_update = true })
+          SteamFollowButton({
+            group = self.ui,
+            x = gw / 2 + 40,
+            y = gh / 2 - 10,
+            force_update = true,
+          })
           Button({
             group = self.ui,
             x = gw / 2 + 40,
@@ -1092,120 +1092,86 @@ function Arena:quit()
       if current_new_game_plus == 2 then
         state.achievement_new_game_1 = true
         system.save_state()
-        steam.userStats.setAchievement("NEW_GAME_1")
-        steam.userStats.storeStats()
       end
 
       if current_new_game_plus == 6 then
         state.achievement_new_game_5 = true
         system.save_state()
-        steam.userStats.setAchievement("GAME_COMPLETE")
-        steam.userStats.storeStats()
       end
 
       if self.ranger_level >= 2 then
         state.achievement_rangers_win = true
         system.save_state()
-        steam.userStats.setAchievement("RANGERS_WIN")
-        steam.userStats.storeStats()
       end
 
       if self.warrior_level >= 2 then
         state.achievement_warriors_win = true
         system.save_state()
-        steam.userStats.setAchievement("WARRIORS_WIN")
-        steam.userStats.storeStats()
       end
 
       if self.mage_level >= 2 then
         state.achievement_mages_win = true
         system.save_state()
-        steam.userStats.setAchievement("MAGES_WIN")
-        steam.userStats.storeStats()
       end
 
       if self.rogue_level >= 2 then
         state.achievement_rogues_win = true
         system.save_state()
-        steam.userStats.setAchievement("ROGUES_WIN")
-        steam.userStats.storeStats()
       end
 
       if self.healer_level >= 2 then
         state.achievement_healers_win = true
         system.save_state()
-        steam.userStats.setAchievement("HEALERS_WIN")
-        steam.userStats.storeStats()
       end
 
       if self.enchanter_level >= 2 then
         state.achievement_enchanters_win = true
         system.save_state()
-        steam.userStats.setAchievement("ENCHANTERS_WIN")
-        steam.userStats.storeStats()
       end
 
       if self.nuker_level >= 2 then
         state.achievement_nukers_win = true
         system.save_state()
-        steam.userStats.setAchievement("NUKERS_WIN")
-        steam.userStats.storeStats()
       end
 
       if self.conjurer_level >= 2 then
         state.achievement_conjurers_win = true
         system.save_state()
-        steam.userStats.setAchievement("CONJURERS_WIN")
-        steam.userStats.storeStats()
       end
 
       if self.psyker_level >= 2 then
         state.achievement_psykers_win = true
         system.save_state()
-        steam.userStats.setAchievement("PSYKERS_WIN")
-        steam.userStats.storeStats()
       end
 
       if self.curser_level >= 2 then
         state.achievement_cursers_win = true
         system.save_state()
-        steam.userStats.setAchievement("CURSERS_WIN")
-        steam.userStats.storeStats()
       end
 
       if self.forcer_level >= 2 then
         state.achievement_forcers_win = true
         system.save_state()
-        steam.userStats.setAchievement("FORCERS_WIN")
-        steam.userStats.storeStats()
       end
 
       if self.swarmer_level >= 2 then
         state.achievement_swarmers_win = true
         system.save_state()
-        steam.userStats.setAchievement("SWARMERS_WIN")
-        steam.userStats.storeStats()
       end
 
       if self.voider_level >= 2 then
         state.achievement_voiders_win = true
         system.save_state()
-        steam.userStats.setAchievement("VOIDERS_WIN")
-        steam.userStats.storeStats()
       end
 
       if self.sorcerer_level >= 3 then
         state.achievement_sorcerers_win = true
         system.save_state()
-        steam.userStats.setAchievement("SORCERERS_WIN")
-        steam.userStats.storeStats()
       end
 
       if self.mercenary_level >= 2 then
         state.achievement_mercenaries_win = true
         system.save_state()
-        steam.userStats.setAchievement("MERCENARIES_WIN")
-        steam.userStats.storeStats()
       end
 
       local all_units_level_2 = true
@@ -1218,8 +1184,6 @@ function Arena:quit()
       if all_units_level_2 then
         state.achievement_level_2_win = true
         system.save_state()
-        steam.userStats.setAchievement("LEVEL_2_WIN")
-        steam.userStats.storeStats()
       end
 
       local units = self.player:get_all_units()
@@ -1233,8 +1197,6 @@ function Arena:quit()
       if all_units_level_3 then
         state.achievement_level_3_win = true
         system.save_state()
-        steam.userStats.setAchievement("LEVEL_3_WIN")
-        steam.userStats.storeStats()
       end
     end
   else
@@ -1274,16 +1236,13 @@ function Arena:quit()
           parent = self,
           force_update = true,
         })
-        self.shop_text = Text(
+        self.shop_text = Text({
           {
-            {
-              text = "[wavy_mid, fg]gold: [yellow]" .. gold,
-              font = pixul_font,
-              alignment = "center",
-            },
+            text = "[wavy_mid, fg]gold: [yellow]" .. gold,
+            font = pixul_font,
+            alignment = "center",
           },
-          global_text_tags
-        )
+        }, global_text_tags)
 
         self.build_text = Text2({
           group = self.ui,
@@ -1787,18 +1746,15 @@ function Arena:die()
               system.save_run()
               main:go_to("buy_screen", 1, 0, {}, passives, 1, 0)
             end,
-            text = Text(
+            text = Text({
               {
-                {
-                  text = "[wavy, "
-                    .. tostring(state.dark_transitions and "fg" or "bg")
-                    .. "]restarting...",
-                  font = pixul_font,
-                  alignment = "center",
-                },
+                text = "[wavy, "
+                  .. tostring(state.dark_transitions and "fg" or "bg")
+                  .. "]restarting...",
+                font = pixul_font,
+                alignment = "center",
               },
-              global_text_tags
-            ),
+            }, global_text_tags),
           })
         end,
       })
@@ -2554,22 +2510,19 @@ function Arena:spawn_n_enemies(p, j, n, pass)
         spawn1:play({ pitch = random:float(0.8, 1.2), volume = 0.15 })
         if not pass then
           check_circle:move_to(x, y)
-          local objects = self.main:get_objects_in_shape(
-            check_circle,
-            {
-              Seeker,
-              EnemyCritter,
-              Critter,
-              Player,
-              Sentry,
-              Automaton,
-              Bomb,
-              Volcano,
-              Saboteur,
-              Pet,
-              Turret,
-            }
-          )
+          local objects = self.main:get_objects_in_shape(check_circle, {
+            Seeker,
+            EnemyCritter,
+            Critter,
+            Player,
+            Sentry,
+            Automaton,
+            Bomb,
+            Volcano,
+            Saboteur,
+            Pet,
+            Turret,
+          })
           if #objects > 0 then
             self.enemy_spawns_prevented = self.enemy_spawns_prevented + 1
             return
