@@ -1,4 +1,4 @@
--- The base State class.  
+-- The base State class.
 -- The general way of creating an object that implements these functions goes like this:
 --[[
 MyState = Object:extend()
@@ -19,7 +19,8 @@ end
 function MyState:draw()
 
 end
-]]--
+]]
+--
 
 -- This creates a new MyState class which you can then use to start writing your code.
 -- Use the init function for things you need to do when the state object is created.
@@ -39,19 +40,19 @@ function State:init_state(name)
   self.active = false
 end
 
-
 function State:enter(from, ...)
   self.active = true
-  if self.on_enter then self:on_enter(from, ...) end
+  if self.on_enter then
+    self:on_enter(from, ...)
+  end
 end
-
 
 function State:exit(to, ...)
   self.active = false
-  if self.on_exit then self:on_exit(to, ...) end
+  if self.on_exit then
+    self:on_exit(to, ...)
+  end
 end
-
-
 
 -- The main state. This is a global state that is always active and contains all other states.
 Main = Object:extend()
@@ -62,7 +63,6 @@ function Main:init(name)
   self.transitions = Group():no_camera()
 end
 
-
 function Main:update(dt)
   for _, state in pairs(self.states) do
     if state.active or state.persistent_update then
@@ -71,7 +71,6 @@ function Main:update(dt)
   end
   self.transitions:update(dt)
 end
-
 
 function Main:draw()
   for _, state in pairs(self.states) do
@@ -82,23 +81,22 @@ function Main:draw()
   self.transitions:draw()
 end
 
-
 function Main:add(state)
   self.states[state.name] = state
 end
 
-
 function Main:get(state_name)
   return self.states[state_name]
 end
-
 
 -- Deactivates the current active state and activates the target one.
 -- Calls on_exit for the deactivated state and on_enter for the activated one.
 -- If on_exit returns true then the deactivated state will be removed from memory.
 -- You must handle the destruction of it yourself in its on_exit function.
 function Main:go_to(state, ...)
-  if type(state) == 'string' then state = self:get(state) end
+  if type(state) == "string" then
+    state = self:get(state)
+  end
 
   if self.current then
     if self.current.active then

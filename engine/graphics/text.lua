@@ -27,7 +27,8 @@ text = Text({
   {text: 'This text is normal', font: yet_another_font, alignment: 'center', height_multiplier: 1.2}
   {text: '[yellow, shaking]This text is yellow and shaking []while this text is normal', font: some_font, alignment: 'center'}
 }, {yellow = yellow_text_tag, shaking = shaking_text_tag})
-]]--
+]]
+--
 
 -- There are two main things happening in the example above: first we're creating TextTags and then we're creating a text object that uses those tags.
 -- The way each tag works is fairly simple: a tag accepts 3 functions, init, update and draw, and each of those functions operates on the text's characters one at a time.
@@ -59,7 +60,6 @@ function Text:init(text_data, text_tags)
   return self
 end
 
-
 function Text:update(dt)
   self.t:update(dt)
   self:format_text()
@@ -68,7 +68,7 @@ function Text:update(dt)
       for k, v in pairs(self.text_tags) do
         for _, tag in ipairs(c.tags) do
           if tag == k then
-            if v.actions.update then 
+            if v.actions.update then
               v.actions.update(c, dt, i, self)
             end
           end
@@ -77,7 +77,6 @@ function Text:update(dt)
     end
   end
 end
-
 
 -- Draws the text object centered at the specified location.
 function Text:draw(x, y, r, sx, sy)
@@ -93,13 +92,22 @@ function Text:draw(x, y, r, sx, sy)
         end
       end
       graphics.push(x, y, r, sx, sy)
-      graphics.print(c.character, line.font, x + c.x - self.w/2, y + c.y - self.h/2, c.r or 0, c.sx or 1, c.sy or c.sx or 1, c.ox or 0, c.oy or 0)
+      graphics.print(
+        c.character,
+        line.font,
+        x + c.x - self.w / 2,
+        y + c.y - self.h / 2,
+        c.r or 0,
+        c.sx or 1,
+        c.sy or c.sx or 1,
+        c.ox or 0,
+        c.oy or 0
+      )
       graphics.pop()
       graphics.set_color(self.white)
     end
   end
 end
-
 
 function Text:format_text()
   self.w = 0
@@ -112,7 +120,8 @@ function Text:format_text()
 
   local x, y = 0, 0
   for j, line in ipairs(self.lines) do
-    local h = (line.font.h*(line.height_multiplier or 1) + (line.height_offset or 0))*(line.sy or 1)
+    local h = (line.font.h * (line.height_multiplier or 1) + (line.height_offset or 0))
+      * (line.sy or 1)
     for i, c in ipairs(line.characters) do
       c.x = x
       c.y = y
@@ -130,19 +139,27 @@ function Text:format_text()
   for i, line in ipairs(self.lines) do
     if line.alignment == "right" then
       local text_width = 0
-      for _, c in ipairs(line.characters) do text_width = text_width + line.font:get_text_width(c.character) end
+      for _, c in ipairs(line.characters) do
+        text_width = text_width + line.font:get_text_width(c.character)
+      end
       local left_over_width = self.w - (line.alignment_width or text_width)
-      for _, c in ipairs(line.characters) do c.x = c.x + left_over_width end
-
+      for _, c in ipairs(line.characters) do
+        c.x = c.x + left_over_width
+      end
     elseif line.alignment == "center" then
       local text_width = 0
-      for _, c in ipairs(line.characters) do text_width = text_width + line.font:get_text_width(c.character) end
+      for _, c in ipairs(line.characters) do
+        text_width = text_width + line.font:get_text_width(c.character)
+      end
       local left_over_width = self.w - (line.alignment_width or text_width)
-      for _, c in ipairs(line.characters) do c.x = c.x + left_over_width/2 end
-
+      for _, c in ipairs(line.characters) do
+        c.x = c.x + left_over_width / 2
+      end
     elseif line.alignment == "justified" then
       local text_width = 0
-      for _, c in ipairs(line.characters) do text_width = text_width + line.font:get_text_width(c.character) end
+      for _, c in ipairs(line.characters) do
+        text_width = text_width + line.font:get_text_width(c.character)
+      end
       local left_over_width = self.w - (line.alignment_width or text_width)
       local spaces_count = 0
       for _, c in ipairs(line.characters) do
@@ -150,7 +167,7 @@ function Text:format_text()
           spaces_count = spaces_count + 1
         end
       end
-      local added_width_to_each_space = math.floor(left_over_width/spaces_count)
+      local added_width_to_each_space = math.floor(left_over_width / spaces_count)
       local total_added_width = 0
       for _, c in ipairs(characters) do
         if c.character == " " then
@@ -164,22 +181,25 @@ function Text:format_text()
   end
 end
 
-
 function Text:parse(text_data)
   for _, line in ipairs(text_data) do
     local tags = {}
     for i, tags_text, j in line.text:gmatch("()%[(.-)%]()") do
       if tags_text == "" then
-        table.insert(tags, {i = tonumber(i), j = tonumber(j)-1})
+        table.insert(tags, { i = tonumber(i), j = tonumber(j) - 1 })
         line.tags = tags
       else
         local local_tags = {}
-        for tag in tags_text:gmatch("[%w_]+") do table.insert(local_tags, tag) end
-        table.insert(tags, {i = tonumber(i), j = tonumber(j)-1, tags = local_tags})
+        for tag in tags_text:gmatch("[%w_]+") do
+          table.insert(local_tags, tag)
+        end
+        table.insert(tags, { i = tonumber(i), j = tonumber(j) - 1, tags = local_tags })
         line.tags = tags
       end
     end
-    if not line.tags then line.tags = {} end
+    if not line.tags then
+      line.tags = {}
+    end
   end
 
   for _, line in ipairs(text_data) do
@@ -196,7 +216,7 @@ function Text:parse(text_data)
         end
       end
       if not inside_tags then
-        table.insert(line.characters, {character = c, visible = true, tags = current_tags or {}})
+        table.insert(line.characters, { character = c, visible = true, tags = current_tags or {} })
       end
     end
   end
@@ -211,7 +231,6 @@ function Text:parse(text_data)
 
   return text_data
 end
-
 
 -- Sets new text.
 -- Reapplies all modifications (wrap width, justification, etc).
@@ -233,7 +252,6 @@ function Text:set_text(text_data)
   end
 end
 
-
 -- Sets the line's alignment width.
 -- This is used to align the text according to the alignment option
 -- For instance, if the alignment width is 200 and the alignment is 'right', then the right edge used for this alignment will be 200 units to the right
@@ -242,7 +260,6 @@ function Text:set_alignment_width(line, alignment_width)
   self:format_text()
   return self
 end
-
 
 -- Sets the text's line height.
 -- Lines are automatically placed vertically using the font's height for spacing, but you can increase or decrease this distance by setting these values.
@@ -253,14 +270,12 @@ function Text:set_line_height_data(line, offset, multiplier)
   return self
 end
 
-
 -- Sets the text's font. By default texts use the global font.
 function Text:set_font(line, font)
   self.lines[line].font = font
   self:format_text()
   return self
 end
-
 
 -- Sets the alignment behavior for the given line.
 -- Possible behaviors are: 'right', 'center' and 'justified'
@@ -269,7 +284,6 @@ function Text:set_alignment(line, alignment)
   self:format_text()
   return self
 end
-
 
 -- The text tag objects to be used with text instances.
 TextTag = Object:extend()

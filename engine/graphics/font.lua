@@ -5,11 +5,9 @@ function Font:init(asset_name, font_size)
   self.h = self.font:getHeight()
 end
 
-
 function Font:get_text_width(text)
   return self.font:getWidth(text)
 end
-
 
 function Font:get_height()
   return self.font:getHeight()

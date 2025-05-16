@@ -6,7 +6,6 @@ function Graph:init()
   self.floyd_dists = {}
 end
 
-
 -- Nodes can be of any type but must be unique
 -- graph = Graph()
 -- graph:add_node(1)
@@ -15,7 +14,6 @@ function Graph:add_node(node)
   self.adjacency_list[node] = {}
   self:_set_nodes()
 end
-
 
 -- Returns a node after searching for it by property, the property value must be unique among all nodes
 -- graph = Graph()
@@ -30,7 +28,6 @@ function Graph:get_node_by_property(key, value)
   end
 end
 
-
 -- Runs function f for all nodes in the graph
 -- graph = Graph()
 -- graph:add_node(1)
@@ -41,7 +38,6 @@ function Graph:for_all_nodes(f)
     f(node)
   end
 end
-
 
 -- Runs function f for all edges in the graph
 -- graph = Graph()
@@ -57,7 +53,6 @@ function Graph:for_all_edges(f)
   end
 end
 
-
 -- Returns a table containing all neighbors of the given node.
 -- graph = Graph()
 -- graph:add_node(1)
@@ -70,7 +65,6 @@ function Graph:get_node_neighbors(node)
   return self.adjacency_list[node]
 end
 
-
 -- graph = Graph()
 -- graph:add_node(1)
 -- graph:remove_node(1)
@@ -82,7 +76,6 @@ function Graph:remove_node(node)
   self:_set_nodes()
 end
 
-
 local function contains_edge(table, edge)
   for _, v in ipairs(table) do
     if (v[1] == edge[1] and v[2] == edge[2]) or (v[1] == edge[2] and v[2] == edge[1]) then
@@ -92,18 +85,20 @@ local function contains_edge(table, edge)
   return false
 end
 
-
 -- graph = Graph()
 -- graph:add_node(1)
 -- graph:add_node('node_2')
 -- graph:add_edge(1, 'node_2')
 function Graph:add_edge(node1, node2)
-  if table.any(self.adjacency_list[node1], function(v) return v == node2 end) then return end
+  if table.any(self.adjacency_list[node1], function(v)
+    return v == node2
+  end) then
+    return
+  end
   table.insert(self.adjacency_list[node1], node2)
   table.insert(self.adjacency_list[node2], node1)
   self:_set_edges()
 end
-
 
 -- graph = Graph()
 -- graph:add_node(1)
@@ -125,7 +120,6 @@ function Graph:remove_edge(node1, node2)
   end
   self:_set_edges()
 end
-
 
 -- graph = Graph()
 -- graph:add_node(1)
@@ -165,11 +159,9 @@ function Graph:shortest_path_bfs(node1, node2)
   end
 end
 
-
 function Graph:get_distance_between_nodes(node1, node2)
   return self.floyd_dists[node1][node2]
 end
-
 
 -- Comments follow pseudocode from http://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm.
 -- graph = Graph()
@@ -210,14 +202,17 @@ function Graph:floyd_warshall()
   for _, nodek in ipairs(self.nodes) do
     for _, nodei in ipairs(self.nodes) do
       for _, nodej in ipairs(self.nodes) do
-        if self.floyd_dists[nodei][nodek] + self.floyd_dists[nodek][nodej] < self.floyd_dists[nodei][nodej] then
-          self.floyd_dists[nodei][nodej] = self.floyd_dists[nodei][nodek] + self.floyd_dists[nodek][nodej]
+        if
+          self.floyd_dists[nodei][nodek] + self.floyd_dists[nodek][nodej]
+          < self.floyd_dists[nodei][nodej]
+        then
+          self.floyd_dists[nodei][nodej] = self.floyd_dists[nodei][nodek]
+            + self.floyd_dists[nodek][nodej]
         end
       end
     end
   end
 end
-
 
 function Graph:_get_edge(node1, node2)
   for _, node in ipairs(self.adjacency_list[node1]) do
@@ -228,7 +223,6 @@ function Graph:_get_edge(node1, node2)
   return false
 end
 
-
 function Graph:_set_nodes()
   self.nodes = {}
   for node, _ in pairs(self.adjacency_list) do
@@ -236,18 +230,16 @@ function Graph:_set_nodes()
   end
 end
 
-
 function Graph:_set_edges()
   self.edges = {}
   for node, list in pairs(self.adjacency_list) do
     for _, _node in ipairs(list) do
-      if not contains_edge(self.edges, {node, _node}) then
-        table.insert(self.edges, {node, _node})
+      if not contains_edge(self.edges, { node, _node }) then
+        table.insert(self.edges, { node, _node })
       end
     end
   end
 end
-
 
 function Graph:__tostring()
   local str = "----\nAdjacency List: \n"

@@ -14,23 +14,37 @@ function AnimationFrames:init(image, frame_w, frame_h, frames_list)
   self.frame_w, self.frame_h = frame_w, frame_h
   self.frames_list = frames_list
 
-  if type(self.frames_list) == 'number' then -- the source is a single row spritesheet and number of frames are specified
+  if type(self.frames_list) == "number" then -- the source is a single row spritesheet and number of frames are specified
     local frames_list = {}
-    for i = 1, self.frames_list do table.insert(frames_list, {i, 1}) end
+    for i = 1, self.frames_list do
+      table.insert(frames_list, { i, 1 })
+    end
     self.frames_list = frames_list
   elseif not self.frames_list then
     local frames_list = {}
-    for i = 1, math.floor(self.source.w/self.frame_w) do table.insert(frames_list, {i, 1}) end
+    for i = 1, math.floor(self.source.w / self.frame_w) do
+      table.insert(frames_list, { i, 1 })
+    end
     self.frames_list = frames_list
   end
 
   self.frames = {}
   for i, frame in ipairs(self.frames_list) do
-    self.frames[i] = {quad = love.graphics.newQuad((frame[1]-1)*self.frame_w, (frame[2]-1)*self.frame_h, self.frame_w, self.frame_h, self.source.w, self.source.h), w = self.frame_w, h = self.frame_h}
+    self.frames[i] = {
+      quad = love.graphics.newQuad(
+        (frame[1] - 1) * self.frame_w,
+        (frame[2] - 1) * self.frame_h,
+        self.frame_w,
+        self.frame_h,
+        self.source.w,
+        self.source.h
+      ),
+      w = self.frame_w,
+      h = self.frame_h,
+    }
   end
   self.size = #self.frames
 end
-
 
 function AnimationFrames:draw(frame, x, y, r, sx, sy, ox, oy, color)
   local _r, g, b, a
@@ -38,12 +52,21 @@ function AnimationFrames:draw(frame, x, y, r, sx, sy, ox, oy, color)
     _r, g, b, a = love.graphics.getColor()
     graphics.set_color(color)
   end
-  love.graphics.draw(self.source.image, self.frames[frame].quad, x, y, r or 0, sx or 1, sy or sx or 1, self.frames[frame].w/2 + (ox or 0), self.frames[frame].h/2 + (oy or 0))
-  if color then love.graphics.setColor(_r, g, b, a) end
+  love.graphics.draw(
+    self.source.image,
+    self.frames[frame].quad,
+    x,
+    y,
+    r or 0,
+    sx or 1,
+    sy or sx or 1,
+    self.frames[frame].w / 2 + (ox or 0),
+    self.frames[frame].h / 2 + (oy or 0)
+  )
+  if color then
+    love.graphics.setColor(_r, g, b, a)
+  end
 end
-
-
-
 
 -- The class that logically updates an animation.
 -- This being separated from the visual part of an animation is useful whenever you need animation-like behavior unrelated to graphics, like making your own animations with code only. For instance:
@@ -63,7 +86,8 @@ self.animation = AnimationLogic(0.04, 6, 'loop', {
     self.parent.timer:tween(0.05, self, {sx = 0}, math.linear, nil, 'move_5')
   end,
 })
-]]--
+]]
+--
 --
 -- That was an example of a code-only movement animation for a game I'm making.
 -- The arguments that this takes are the delay between each frame, how many frames there are, the loop mode ('loop', 'once' or 'bounce') and a table of actions.
@@ -87,13 +111,16 @@ function AnimationLogic:init(delay, frames, loop_mode, actions)
   self.direction = 1
 end
 
-
 function AnimationLogic:update(dt)
-  if self.dead then return end
+  if self.dead then
+    return
+  end
 
   self.timer = self.timer + dt
   local delay = self.delay
-  if type(self.delay) == "table" then delay = self.delay[self.frame] end
+  if type(self.delay) == "table" then
+    delay = self.delay[self.frame]
+  end
 
   if self.timer > delay then
     self.timer = 0
@@ -106,16 +133,17 @@ function AnimationLogic:update(dt)
         self.frame = 1
       elseif self.loop_mode == "bounce" then
         self.direction = -self.direction
-        self.frame = self.frame + 2*self.direction
+        self.frame = self.frame + 2 * self.direction
       end
-      if self.actions and self.actions[0] then self.actions[0]() end
+      if self.actions and self.actions[0] then
+        self.actions[0]()
+      end
     end
-    if self.actions and self.actions[self.frame] then self.actions[self.frame]() end
+    if self.actions and self.actions[self.frame] then
+      self.actions[self.frame]()
+    end
   end
 end
-
-
-
 
 -- The Animation class, a mix of AnimationFrames and AnimationLogic.
 -- Takes in a delay, an AnimationFrames object, the loop mode and a table of actions.
@@ -127,14 +155,13 @@ function Animation:init(delay, animation_frames, loop_mode, actions)
   self.size = self.animation_frames.size
   self.loop_mode = loop_mode
   self.actions = actions
-  self.animation_logic = AnimationLogic(self.delay, self.animation_frames.size, self.loop_mode, self.actions)
+  self.animation_logic =
+    AnimationLogic(self.delay, self.animation_frames.size, self.loop_mode, self.actions)
 end
-
 
 function Animation:update(dt)
   self.animation_logic:update(dt)
 end
-
 
 function Animation:draw(x, y, r, sx, sy, ox, oy, color)
   self.animation_frames:draw(self.animation_logic.frame, x, y, r, sx, sy, ox, oy, color)

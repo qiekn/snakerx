@@ -3,7 +3,6 @@
 -- The game object must have a .parent attribute defined and pointing to another game object.
 Parent = Object:extend()
 
-
 -- Follows the parent's transform exclusively.
 -- This means that if the parent dies the entity also dies.
 -- The .parent attribute is niled on death.

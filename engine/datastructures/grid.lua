@@ -6,21 +6,20 @@ Grid = Object:extend()
 function Grid:init(w, h, v)
   self.grid = {}
   self.w, self.h = w, h
-  if type(v) ~= 'table' then
+  if type(v) ~= "table" then
     for j = 1, h do
       for i = 1, w do
-        self.grid[w*(j-1) + i] = v or 0
+        self.grid[w * (j - 1) + i] = v or 0
       end
     end
   else
     for j = 1, h do
       for i = 1, w do
-        self.grid[w*(j-1) + i] = v[w*(j-1) + i]
+        self.grid[w * (j - 1) + i] = v[w * (j - 1) + i]
       end
     end
   end
 end
-
 
 -- Creates a copy of a grid instance
 -- grid = Grid(10, 5, 0)
@@ -31,7 +30,6 @@ function Grid:clone()
   return new_grid
 end
 
-
 -- grid = Grid(10, 5, 0)
 -- grid:get(2, 2) -> 0
 -- grid:set(2, 2, 1)
@@ -39,10 +37,9 @@ end
 -- grid:set(11, 1, 1) -> doesn't actually set because out of bounds, fails silently
 function Grid:set(x, y, v)
   if not self:_is_outside_bounds(x, y) then
-    self.grid[self.w*(y-1) + x] = v
+    self.grid[self.w * (y - 1) + x] = v
   end
 end
-
 
 -- Applies function f to all grid elements
 -- If i1,j1 and i2,j2 are passed then it applies only to the subgrid defined by those values.
@@ -64,7 +61,6 @@ function Grid:apply(f, i1, j1, i2, j2)
   end
 end
 
-
 -- grid = Grid(10, 5, 0)
 -- print(grid:get(2, 2)) -> 0
 -- grid:set(2, 2, 1)
@@ -72,10 +68,9 @@ end
 -- grid:get(11, 1) -> nil, out of bounds, fails silently
 function Grid:get(x, y)
   if not self:_is_outside_bounds(x, y) then
-    return self.grid[self.w*(y-1) + x]
+    return self.grid[self.w * (y - 1) + x]
   end
 end
-
 
 -- Converts the 2D grid to a 1D array
 -- If i1,j1 and i2,j2 are passed then it applies only to the subgrid defined by those values.
@@ -102,7 +97,6 @@ function Grid:to_table(i1, j1, i2, j2)
   return t, self.w
 end
 
-
 -- Rotates the grid in an anti-clockwise direction
 -- grid = Grid(3, 2, {1, 2, 3, 4, 5, 6}) -> the grid looks like this:
 -- [1, 2, 3]
@@ -123,16 +117,15 @@ function Grid:rotate_anticlockwise()
   end
 
   for i = 1, new_grid.w do
-    for k = 0, math.floor(new_grid.h/2) do
-      local v1, v2 = new_grid:get(i, 1+k), new_grid:get(i, new_grid.h-k)
-      new_grid:set(i, 1+k, v2)
-      new_grid:set(i, new_grid.h-k, v1)
+    for k = 0, math.floor(new_grid.h / 2) do
+      local v1, v2 = new_grid:get(i, 1 + k), new_grid:get(i, new_grid.h - k)
+      new_grid:set(i, 1 + k, v2)
+      new_grid:set(i, new_grid.h - k, v1)
     end
   end
 
   return new_grid
 end
-
 
 -- Rotates the grid in a clockwise direction
 -- grid = Grid(3, 2, {1, 2, 3, 4, 5, 6}) -> the grid looks like this:
@@ -154,16 +147,15 @@ function Grid:rotate_clockwise()
   end
 
   for j = 1, new_grid.h do
-    for k = 0, math.floor(new_grid.w/2) do
-      local v1, v2 = new_grid:get(1+k, j), new_grid:get(new_grid.w-k, j)
-      new_grid:set(1+k, j, v2)
-      new_grid:set(new_grid.w-k, j, v1)
+    for k = 0, math.floor(new_grid.w / 2) do
+      local v1, v2 = new_grid:get(1 + k, j), new_grid:get(new_grid.w - k, j)
+      new_grid:set(1 + k, j, v2)
+      new_grid:set(new_grid.w - k, j, v1)
     end
   end
 
   return new_grid
 end
-
 
 -- Assume the following grid:
 -- grid = Grid(10, 10, {
@@ -209,16 +201,24 @@ function Grid:flood_fill(v)
 
   local flood_fill = function(i, j, color)
     local queue = {}
-    table.insert(queue, {i, j})
+    table.insert(queue, { i, j })
     while #queue > 0 do
       local x, y = unpack(table.remove(queue, 1))
       marked_grid:set(x, y, color)
-      table.insert(islands[color], {x, y})
+      table.insert(islands[color], { x, y })
 
-      if self:get(x, y-1) == v and marked_grid:get(x, y-1) == 0 then table.insert(queue, {x, y-1}) end
-      if self:get(x, y+1) == v and marked_grid:get(x, y+1) == 0 then table.insert(queue, {x, y+1}) end
-      if self:get(x-1, y) == v and marked_grid:get(x-1, y) == 0 then table.insert(queue, {x-1, y}) end
-      if self:get(x+1, y) == v and marked_grid:get(x+1, y) == 0 then table.insert(queue, {x+1, y}) end
+      if self:get(x, y - 1) == v and marked_grid:get(x, y - 1) == 0 then
+        table.insert(queue, { x, y - 1 })
+      end
+      if self:get(x, y + 1) == v and marked_grid:get(x, y + 1) == 0 then
+        table.insert(queue, { x, y + 1 })
+      end
+      if self:get(x - 1, y) == v and marked_grid:get(x - 1, y) == 0 then
+        table.insert(queue, { x - 1, y })
+      end
+      if self:get(x + 1, y) == v and marked_grid:get(x + 1, y) == 0 then
+        table.insert(queue, { x + 1, y })
+      end
     end
   end
 
@@ -238,23 +238,29 @@ function Grid:flood_fill(v)
   return islands, marked_grid
 end
 
-
 function Grid:_is_outside_bounds(x, y)
-  if x > self.w then return true end
-  if x < 1 then return true end
-  if y > self.h then return true end
-  if y < 1 then return true end
+  if x > self.w then
+    return true
+  end
+  if x < 1 then
+    return true
+  end
+  if y > self.h then
+    return true
+  end
+  if y < 1 then
+    return true
+  end
 end
 
-
 function Grid:__tostring()
-  local str = ''
+  local str = ""
   for j = 1, self.h do
-    str = str .. '['
+    str = str .. "["
     for i = 1, self.w do
-      str = str .. self:get(i, j) .. ', '
+      str = str .. self:get(i, j) .. ", "
     end
-    str = str:sub(1, -3) .. ']\n'
+    str = str:sub(1, -3) .. "]\n"
   end
   return str
 end
